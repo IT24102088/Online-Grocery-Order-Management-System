@@ -2,10 +2,36 @@
 <%@ page import="com.example.onlinegroceryordermanagementsystem.Product" %>
 <html>
 <head>
-    <title>Title</title>
-</head>
-<body>
+    <title>Product List</title>
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        .product-card {
+            transition: transform 0.3s;
+            height: 100%;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .product-img {
+            height: 180px;
+            object-fit: contain;
+            padding: 10px;
+        }
+        .card-body {
+            display: flex;
+            flex-direction: column;
+        }
+        .price-tag {
+            font-weight: bold;
+            color: #198754;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body class="bg-light">
 <%
     response.setHeader("Cache-Control","no-cache, no-store, must-revalidate");
     response.setHeader("Pragma","no-cache");
@@ -17,19 +43,37 @@
 
 <jsp:include page="navbar.jsp" />
 
-Welcome to Online Grocery Order Management System
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4">Welcome to Online Grocery</h1>
+        <p class="lead text-muted">Browse our fresh products</p>
+    </div>
 
-
-<%
-    for (Product product : Product.readProductDetails()) {
-%>
-<%= product.getpName() %><b>
-<%= product.getpPrice() %><b>
-    <img src="Images/<%= product.getImageName() %>" alt="<%= product.getImageName() %>" width="200" height="150" />
-
-<%
-    }
-%>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        <%
+            for (Product product : Product.readProductDetails()) {
+        %>
+        <div class="col">
+            <div class="card product-card h-100">
+                <img src="Images/<%= product.getImageName() %>"
+                     class="card-img-top product-img"
+                     alt="<%= product.getpName() %>"
+                     onerror="this.src='Images/default-product.png'">
+                <div class="card-body">
+                    <h5 class="card-title"><%= product.getpName() %></h5>
+                    <p class="card-text text-muted">Fresh and high quality</p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="price-tag">$<%= String.format("%.2f",34.0) %></span>
+                        <button class="btn btn-sm btn-success">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%
+            }
+        %>
+    </div>
+</div>
 
 </body>
 </html>

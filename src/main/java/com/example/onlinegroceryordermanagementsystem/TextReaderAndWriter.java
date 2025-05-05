@@ -17,13 +17,14 @@ public class TextReaderAndWriter {
     }
 
     public boolean writeText(String text) throws IOException {
-        try {
-            writer = new FileWriter(this.filepath);
-            writer.write(text);
-            writer.close();
+        try (BufferedWriter writer = new BufferedWriter(
+                new FileWriter(this.filepath, true))) {  // ← TRUE for append
+
+            writer.append(text);
             return true;
+
         } catch (IOException e) {
-            writer.close();
+            System.err.println("Write failed: " + e.getMessage());
             return false;
         }
     }

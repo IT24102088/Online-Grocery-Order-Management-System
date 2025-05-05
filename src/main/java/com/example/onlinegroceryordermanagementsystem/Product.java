@@ -21,6 +21,10 @@ public class Product {
 
     }
 
+    public static void setProductsList(ArrayList<Product> productsList) {
+        Product.productsList = productsList;
+    }
+
     public static ArrayList<Product> getProductsList() {
         return productsList;
     }
@@ -51,6 +55,7 @@ public class Product {
 
     public static ArrayList<Product>readProductDetails(){
 
+        productsList = new ArrayList<Product>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(filepath));
             String line;

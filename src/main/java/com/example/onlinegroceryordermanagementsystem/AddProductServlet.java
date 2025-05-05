@@ -38,8 +38,10 @@ public class AddProductServlet extends HttpServlet {
         TextReaderAndWriter textWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\productDetails");
         textWriter.writeText(pName+","+pPrice+","+imageName+"\n");
 
-        TextReaderAndWriter imageWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\Images");
+        TextReaderAndWriter imageWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\src\\main\\webapp\\Images");
         imageWriter.writeImage(filePart);
+
+        resp.sendRedirect("adminPanel.jsp");
 
 
 
