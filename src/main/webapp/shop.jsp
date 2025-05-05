@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" errorPage="error.jsp"%>
-
+<%@ page import="com.example.onlinegroceryordermanagementsystem.Product" %>
 <html>
 <head>
     <title>Title</title>
@@ -19,6 +19,17 @@
 
 Welcome to Online Grocery Order Management System
 
+
+<%
+    for (Product product : Product.readProductDetails()) {
+%>
+<%= product.getpName() %><b>
+<%= product.getpPrice() %><b>
+    <img src="Images/<%= product.getImageName() %>" alt="<%= product.getImageName() %>" width="200" height="150" />
+
+<%
+    }
+%>
 
 </body>
 </html>

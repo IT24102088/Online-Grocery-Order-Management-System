@@ -76,16 +76,17 @@ public class TextReaderAndWriter {
         return false;
     }
 
-    public boolean writeImage(Part filepart){
+    public void writeImage(Part filepart){
 
         try{
             filepart.write(filepath + File.separator + filepart.getSubmittedFileName());
-            return true;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
     }
+
+
 
 
 }
