@@ -7,13 +7,13 @@ import java.util.ArrayList;
 
 public class Product {
 
-    private String pName=null;
-    private String pPrice=null;
+    private String pName;
+    private double pPrice;
     private String imageName=null;
     private static ArrayList<Product> productsList = new ArrayList<Product>();
     private static final String filepath = "C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\productDetails";
 
-    Product(String pName, String pPrice, String imageName) {
+    Product(String pName, double pPrice, String imageName) {
 
         this.pName = pName;
         this.pPrice = pPrice;
@@ -37,11 +37,11 @@ public class Product {
         this.pName = pName;
     }
 
-    public String getpPrice() {
+    public double getpPrice() {
         return pPrice;
     }
 
-    public void setpPrice(String pPrice) {
+    public void setpPrice(double pPrice) {
         this.pPrice = pPrice;
     }
 
@@ -64,7 +64,7 @@ public class Product {
 
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                productObject = new Product(parts[0],parts[1],parts[2]);
+                productObject = new Product(parts[0],Double.parseDouble(parts[1]),parts[2]);
                 productsList.add(productObject);
             }
             reader.close();

@@ -4,8 +4,8 @@
 <head>
     <title>Product List</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         .product-card {
             transition: transform 0.3s;
@@ -32,6 +32,8 @@
     </style>
 </head>
 <body class="bg-light">
+
+<script src="js/bootstrap.bundle.min.js"></script>
 <%
     response.setHeader("Cache-Control","no-cache, no-store, must-revalidate");
     response.setHeader("Pragma","no-cache");
@@ -63,7 +65,7 @@
                     <h5 class="card-title"><%= product.getpName() %></h5>
                     <p class="card-text text-muted">Fresh and high quality</p>
                     <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <span class="price-tag">$<%= String.format("%.2f",34.0) %></span>
+                        <span class="price-tag">$<%= String.format("%.2f",product.getpPrice()) %></span>
                         <button class="btn btn-sm btn-success">Add to Cart</button>
                     </div>
                 </div>
