@@ -11,6 +11,10 @@
                        href="shop.jsp">Shop</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link <%= request.getRequestURI().endsWith("cart.jsp") ? "active" : "" %>"
+                       href="cart.jsp">Cart</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link <%= request.getRequestURI().endsWith("orders.jsp") ? "active" : "" %>"
                        href="orders.jsp">Orders</a>
                 </li>

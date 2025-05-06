@@ -11,19 +11,22 @@ public class users {
 
     private String userName;
     private String password;
-    private ArrayList<orders> orders;
+    private ArrayList<orders> orders=new ArrayList<>();
     private String role;
     static ArrayList<users> userList = new ArrayList<users>();
     static final String path = "C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\usernameAndPasswords.txt";
 
-    users(String userName, String password, ArrayList<orders> orders) {
+    users(String userName, String password) {
 
         this.userName = userName;
         this.password = password;
-        this.orders = orders;
         this.role = "user";
 
     }
+
+    public void addOrder(orders order) {
+        orders.add(order);
+    };
 
     public String getRole() {
         return role;
