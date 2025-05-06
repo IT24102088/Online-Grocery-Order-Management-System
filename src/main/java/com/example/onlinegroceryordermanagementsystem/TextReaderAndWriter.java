@@ -28,54 +28,6 @@ public class TextReaderAndWriter {
             return false;
         }
     }
-    public boolean checkExists(String text) throws IOException {
-        ArrayList<String> userList = new ArrayList<>();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(this.filepath));
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                userList.add(parts[0]);
-            }
-            reader.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred while reading.");
-        }
-
-        return userList.contains(text);
-
-
-    }
-
-    public boolean validUser(String username,String password) throws IOException {
-
-        HashMap<String,String> users = new HashMap<>();
-
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(this.filepath));
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                String Username = parts[0];
-                String Password = parts[1];
-                users.put(Username, Password);
-            }
-            reader.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred while reading.");
-        }
-
-        for (Map.Entry<String, String> entry : users.entrySet()) {
-            if (entry.getKey().equals(username)) {
-                if (entry.getValue().equals(password)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     public void writeImage(Part filepart){
 
@@ -86,8 +38,6 @@ public class TextReaderAndWriter {
         }
 
     }
-
-
 
 
 }
