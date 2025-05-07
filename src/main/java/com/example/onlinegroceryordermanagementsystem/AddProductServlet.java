@@ -10,6 +10,7 @@ import jakarta.servlet.http.Part;
 
 
 import java.io.*;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -29,6 +30,8 @@ public class AddProductServlet extends HttpServlet {
         Part productPrice = req.getPart("productPrice");
         String imageName = filePart.getSubmittedFileName();
 
+        String id = UUID.randomUUID().toString();
+
         String pName = new BufferedReader(new InputStreamReader(productName.getInputStream()))
                 .lines().collect(Collectors.joining());
 
@@ -36,7 +39,7 @@ public class AddProductServlet extends HttpServlet {
                 .lines().collect(Collectors.joining());
 
         TextReaderAndWriter textWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\productDetails");
-        textWriter.writeText(pName+","+pPrice+","+imageName+"\n");
+        textWriter.writeText(id+","+pName+","+pPrice+","+imageName+"\n");
 
         TextReaderAndWriter imageWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\src\\main\\webapp\\Images");
         imageWriter.writeImage(filePart);

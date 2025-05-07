@@ -11,7 +11,7 @@ public class users {
 
     private String userName;
     private String password;
-    private ArrayList<orders> orders=new ArrayList<>();
+    private ArrayList<Orders> orders=new ArrayList<>();
     private String role;
     static ArrayList<users> userList = new ArrayList<users>();
     static final String path = "C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\usernameAndPasswords.txt";
@@ -24,7 +24,7 @@ public class users {
 
     }
 
-    public void addOrder(orders order) {
+    public void addOrder(Orders order) {
         orders.add(order);
     };
 
@@ -52,11 +52,11 @@ public class users {
         this.password = password;
     }
 
-    public ArrayList<orders> getOrders() {
+    public ArrayList<Orders> getOrders() {
         return orders;
     }
 
-    public void setOrders(ArrayList<orders> orders) {
+    public void setOrders(ArrayList<Orders> orders) {
         this.orders = orders;
     }
 

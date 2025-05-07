@@ -66,7 +66,11 @@
                     <p class="card-text text-muted">Fresh and high quality</p>
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <span class="price-tag">$<%= String.format("%.2f",product.getpPrice()) %></span>
-                        <button class="btn btn-sm btn-success">Add to Cart</button>
+                        <form action="AddToCartServlet" method="post" style="display: inline;">
+                            <input type="hidden" name="productId" value="<%= product.getId() %>">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-sm btn-success">Add to Cart</button>
+                        </form>
                     </div>
                 </div>
             </div>

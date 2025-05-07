@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+
 public class verifyServlet extends HttpServlet {
 
     @Override
@@ -21,6 +22,7 @@ public class verifyServlet extends HttpServlet {
         if(users.validUser(username,password)){
 
             session.setAttribute("username",username);
+            session.setAttribute("password",password);
 
             resp.sendRedirect("shop.jsp");
         }else{

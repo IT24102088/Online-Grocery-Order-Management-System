@@ -7,19 +7,22 @@ import java.util.ArrayList;
 
 public class Product {
 
+    private final String id;
     private String pName;
     private double pPrice;
     private String imageName=null;
     private static ArrayList<Product> productsList = new ArrayList<Product>();
     private static final String filepath = "C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\productDetails";
 
-    Product(String pName, double pPrice, String imageName) {
+    Product(String id,String pName, double pPrice, String imageName) {
 
+        this.id = id;
         this.pName = pName;
         this.pPrice = pPrice;
         this.imageName = imageName;
 
     }
+
 
     public static void setProductsList(ArrayList<Product> productsList) {
         Product.productsList = productsList;
@@ -53,6 +56,16 @@ public class Product {
         this.imageName = imageName;
     }
 
+    public static Product getProduct(String id) {
+        for(Product product:readProductDetails()){
+
+            if(product.getId().equals(id)){
+                return product;
+            }
+        }
+        return null;
+    }
+
     public static ArrayList<Product>readProductDetails(){
 
         productsList = new ArrayList<Product>();
@@ -64,7 +77,7 @@ public class Product {
 
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                productObject = new Product(parts[0],Double.parseDouble(parts[1]),parts[2]);
+                productObject = new Product(parts[0],parts[1],Double.parseDouble(parts[2]),parts[3]);
                 productsList.add(productObject);
             }
             reader.close();
@@ -74,4 +87,7 @@ public class Product {
         return productsList;
     }
 
+    public String getId() {
+        return id;
+    }
 }

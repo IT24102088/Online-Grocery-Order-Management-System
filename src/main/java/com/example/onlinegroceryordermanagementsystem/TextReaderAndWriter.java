@@ -3,7 +3,6 @@ package com.example.onlinegroceryordermanagementsystem;
 import jakarta.servlet.http.Part;
 
 import java.io.*;
-import java.util.*;
 
 public class TextReaderAndWriter {
 
@@ -39,5 +38,13 @@ public class TextReaderAndWriter {
 
     }
 
+    public void writeTextInNew(String text) throws IOException {
+        try (PrintWriter writer = new PrintWriter(filepath)) {
+            writer.print("");
+            writer.print(text);
+        } catch (IOException e) {
+            System.err.println("Error clearing the file using PrintWriter: " + e.getMessage());
+        }
+    }
 
 }
