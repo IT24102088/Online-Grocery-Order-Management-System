@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class Orders {
@@ -12,10 +13,10 @@ public class Orders {
     private ArrayList<Product> products;
     private String date;
     private String username;
-    private static final String filepath="C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\orders"
+    private static final String filepath="C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\orders";
 
-    Orders(ArrayList<Product> product, String date, String username) {
-        this.orderId = UUID.randomUUID().toString();
+    Orders(String orderId,String date, String username,ArrayList<Product> product) {
+        this.orderId = orderId;
         this.products = product;
         this.username=username;
         this.date = date;
@@ -55,6 +56,15 @@ public class Orders {
         this.username = username;
     }
 
+    public static Orders getOrder(String orderId) {
+        for(Orders order:getOrders()){
+            if(order.getOrderId().equals(orderId)){
+                return order;
+            }
+        }
+        return null;
+    }
+
     public static ArrayList<Orders> getOrders() {
         ArrayList<Orders> orders = new ArrayList<>();
 
@@ -64,13 +74,20 @@ public class Orders {
 
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-
+                ArrayList<Product> products = new ArrayList<>();
+                String id = parts[0];
+                String date = parts[1];
+                String username = parts[2];
+                String[] remainingItems = Arrays.copyOfRange(parts, 3, parts.length);
+                for(String item : remainingItems) {
+                    products.add(Product.getProduct(item));
+                }
+                orders.add(new Orders(id,date, username,products));
             }
             reader.close();
         } catch (IOException e) {
             System.out.println("An error occurred while reading.");
         }
-
 
         return orders;
     }

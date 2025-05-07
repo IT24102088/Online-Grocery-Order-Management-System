@@ -3,7 +3,6 @@
 <%@ page import="com.example.onlinegroceryordermanagementsystem.Carts" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="com.example.onlinegroceryordermanagementsystem.Carts" %>
 <html>
 <head>
     <title>Your Shopping Cart</title>
@@ -13,7 +12,6 @@
     <style>
         body {
             background-color: #f8f9fa;
-            padding-top: 20px;
         }
         .cart-container {
             max-width: 1200px;
@@ -58,7 +56,6 @@
                 double total = 0;
 
                 if (username != null) {
-
                     List<Carts> allCarts = Carts.getCarts();
                     for (Carts cart : allCarts) {
                         if (username.equals(cart.getUserName())) {
@@ -92,25 +89,28 @@
                         <p class="text-muted mb-0">Product ID: <%= product.getId() %></p>
                     </div>
                     <div class="col-md-3">
-                        <div class="input-group quantity-control">
-                            <button class="btn btn-outline-secondary minus-btn"
-                                    type="button"
-                                    data-cart-id="<%= cart.getProductId() %>">-</button>
-                            <input type="text" class="form-control text-center quantity-input"
-                                   value="<%= cart.getQuantity() %>">
-                            <button class="btn btn-outline-secondary plus-btn"
-                                    type="button"
-                                    data-cart-id="<%= cart.getProductId() %>">+</button>
-                        </div>
+                        <form action="changeQuantity" method="post" class="d-inline">
+                            <input type="hidden" name="action" value="update">
+                            <input type="hidden" name="cartId" value="<%= cart.getProductId() %>">
+                            <div class="input-group quantity-control">
+                                <button class="btn btn-outline-secondary" type="submit" name="quantityChange" value="-1">-</button>
+                                <input type="text" class="form-control text-center"
+                                       value="<%= cart.getQuantity() %>" readonly>
+                                <button class="btn btn-outline-secondary" type="submit" name="quantityChange" value="1">+</button>
+                            </div>
+                        </form>
                     </div>
                     <div class="col-md-2 text-end">
                         <h5>$<%= String.format("%.2f", product.getpPrice() * cart.getQuantity()) %></h5>
                     </div>
                     <div class="col-md-1 text-end">
-                        <button class="btn btn-danger btn-sm remove-btn"
-                                data-cart-id="<%= cart.getProductId() %>">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                        <form action="removeCart" method="post" class="d-inline">
+                            <input type="hidden" name="action" value="remove">
+                            <input type="hidden" name="cartId" value="<%= cart.getProductId() %>">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -154,106 +154,17 @@
                     <form action="processOrder" method="post" class="d-grid">
                         <button type="submit" class="btn btn-success w-100 py-2">Proceed to Checkout</button>
                     </form>
-
                     <form action="shop.jsp" method="get" class="d-grid mt-2">
                         <button type="submit" class="btn btn-outline-secondary w-100 py-2">Continue Shopping</button>
                     </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Bootstrap Icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-<!-- Bootstrap 5 JS Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Cart AJAX Script -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Quantity update buttons
-        document.querySelectorAll('.minus-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                updateQuantity(this.dataset.cartId, -1);
-            });
-        });
-
-        document.querySelectorAll('.plus-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                updateQuantity(this.dataset.cartId, 1);
-            });
-        });
-
-        // Remove item buttons
-        document.querySelectorAll('.remove-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (confirm('Are you sure you want to remove this item?')) {
-                    removeItem(this.dataset.cartId);
-                }
-            });
-        });
-
-        // Quantity input change
-        document.querySelectorAll('.quantity-input').forEach(input => {
-            input.addEventListener('change', function() {
-                const cartId = this.closest('.quantity-control').querySelector('.minus-btn').dataset.cartId;
-                const newQuantity = parseInt(this.value);
-                updateQuantityDirect(cartId, newQuantity);
-            });
-        });
-
-        function updateQuantity(cartId, change) {
-            const quantityInput = document.querySelector(`.minus-btn[data-cart-id="${cartId}"]`).nextElementSibling;
-            const newQuantity = parseInt(quantityInput.value) + change;
-
-            if (newQuantity > 0) {
-                sendCartUpdate(cartId, newQuantity);
-            }
-        }
-
-        function updateQuantityDirect(cartId, newQuantity) {
-            if (newQuantity > 0) {
-                sendCartUpdate(cartId, newQuantity);
-            } else {
-                alert('Quantity must be at least 1');
-                location.reload();
-            }
-        }
-
-        function removeItem(cartId) {
-            fetch('CartServlet', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `action=remove&cartId=${cartId}`
-            })
-                .then(response => {
-                    if (response.ok) {
-                        location.reload();
-                    } else {
-                        alert('Failed to remove item');
-                    }
-                });
-        }
-
-        function sendCartUpdate(cartId, quantity) {
-            fetch('CartServlet', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `action=update&cartId=${cartId}&quantity=${quantity}`
-            })
-                .then(response => {
-                    if (response.ok) {
-                        location.reload();
-                    } else {
-                        alert('Failed to update quantity');
-                    }
-                });
-        }
-    });
-</script>
 </body>
 </html>

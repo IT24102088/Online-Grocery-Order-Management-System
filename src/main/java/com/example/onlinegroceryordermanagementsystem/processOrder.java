@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.UUID;
 
 
 @WebServlet("/processOrder")
@@ -46,10 +47,12 @@ public class processOrder extends HttpServlet {
 
         String dateString = currentDate.format(formatter);
 
-        Orders order=new Orders(productList, dateString,(String) session.getAttribute("username"));
+        String id= UUID.randomUUID().toString();
+        Orders order=new Orders(id,dateString,(String) session.getAttribute("username"),productList);
 
         StringBuilder oderData;
         oderData = new StringBuilder();
+        oderData.append(id).append(",");
         oderData.append(dateString).append(",");
         oderData.append(order.getUsername());
         for (Product product: order.getProducts()){
