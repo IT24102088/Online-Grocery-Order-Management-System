@@ -65,6 +65,16 @@ public class Orders {
         return null;
     }
 
+    public static ArrayList<Orders> getOrderByUserName(String username) {
+        ArrayList<Orders> orders=new ArrayList<Orders>();
+        for(Orders order:getOrders()){
+            if(order.getUsername().equals(username)){
+                orders.add(order);
+            }
+        }
+        return orders;
+    }
+
     public static ArrayList<Orders> getOrders() {
         ArrayList<Orders> orders = new ArrayList<>();
 

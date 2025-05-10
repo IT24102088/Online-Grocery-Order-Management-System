@@ -14,6 +14,7 @@ public class users {
     private ArrayList<Orders> orders=new ArrayList<>();
     private String role;
     static ArrayList<users> userList = new ArrayList<users>();
+    private boolean isBanned=false;
     static final String path = "C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\usernameAndPasswords.txt";
 
     users(String userName, String password) {
@@ -21,7 +22,28 @@ public class users {
         this.userName = userName;
         this.password = password;
         this.role = "user";
+        if(userName.equals("it24102088")){
+            this.role="owner";
+        }
+    }
+    users(String userName, String password,ArrayList<Orders> orders) {
 
+        this.userName = userName;
+        this.password = password;
+        this.role = "user";
+        this.orders = orders;
+        if(userName.equals("it24102088")){
+            this.role="owner";
+        }
+
+    }
+
+    public boolean isBanned() {
+        return isBanned;
+    }
+
+    public void setBanned(boolean banned) {
+        isBanned = banned;
     }
 
     public void addOrder(Orders order) {
@@ -58,6 +80,23 @@ public class users {
 
     public void setOrders(ArrayList<Orders> orders) {
         this.orders = orders;
+    }
+
+    public static ArrayList<users> getUserList() {
+        ArrayList<users> userList = new ArrayList<users>();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(path));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                userList.add(new users(parts[0],parts[1],Orders.getOrderByUserName(parts[0])));
+            }
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading.");
+        }
+        return userList;
     }
 
     public static boolean checkExists(String text) throws IOException {
@@ -105,5 +144,6 @@ public class users {
         }
         return false;
     }
+
 
 }

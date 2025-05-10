@@ -73,15 +73,6 @@
                 <div class="col-md-4 fw-bold">Username:</div>
                 <div class="col-md-8"><%= username %></div>
             </div>
-            <div class="row mb-3">
-                <div class="col-md-4 fw-bold">Full Name:</div>
-                <div class="col-md-8">
-                    <%= fullName != null ? fullName : "Not specified" %>
-                    <button class="btn btn-sm btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#nameModal">
-                        Change
-                    </button>
-                </div>
-            </div>
         </div>
 
         <div class="mb-4">

@@ -86,7 +86,6 @@
                     </div>
                     <div class="col-md-4">
                         <h5><%= product.getpName() %></h5>
-                        <p class="text-muted mb-0">Product ID: <%= product.getId() %></p>
                     </div>
                     <div class="col-md-3">
                         <form action="changeQuantity" method="post" class="d-inline">

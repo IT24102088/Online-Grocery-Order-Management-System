@@ -69,7 +69,7 @@
 
 <div class="container py-5">
     <div class="text-center mb-5">
-        <h1 class="display-4">Welcome to Online Grocery</h1>
+        <h1 class="display-4">Welcome to FreshCart</h1>
         <p class="lead text-muted">Browse our fresh products</p>
     </div>
 

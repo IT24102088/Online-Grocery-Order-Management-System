@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" errorPage="error.jsp"%>
 <html>
 <head>
-    <title>Register | Online Grocery</title>
+    <title>Register | FreshCart</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
