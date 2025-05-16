@@ -1,0 +1,106 @@
+package com.example.onlinegroceryordermanagementsystem;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.UUID;
+
+public class Orders {
+
+    private String orderId;
+    private ArrayList<Product> products;
+    private String date;
+    private String username;
+    private static final String filepath="C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\orders";
+
+    Orders(String orderId,String date, String username,ArrayList<Product> product) {
+        this.orderId = orderId;
+        this.products = product;
+        this.username=username;
+        this.date = date;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public ArrayList<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(ArrayList<Product> products) {
+        this.products = products;
+    }
+
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public static Orders getOrder(String orderId) {
+        for(Orders order:getOrders()){
+            if(order.getOrderId().equals(orderId)){
+                return order;
+            }
+        }
+        return null;
+    }
+
+    public static ArrayList<Orders> getOrderByUserName(String username) {
+        ArrayList<Orders> orders=new ArrayList<Orders>();
+        for(Orders order:getOrders()){
+            if(order.getUsername().equals(username)){
+                orders.add(order);
+            }
+        }
+        return orders;
+    }
+
+    public static ArrayList<Orders> getOrders() {
+        ArrayList<Orders> orders = new ArrayList<>();
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filepath));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                ArrayList<Product> products = new ArrayList<>();
+                String id = parts[0];
+                String date = parts[1];
+                String username = parts[2];
+                String[] remainingItems = Arrays.copyOfRange(parts, 3, parts.length);
+                for(String item : remainingItems) {
+                    products.add(Product.getProduct(item));
+                }
+                orders.add(new Orders(id,date, username,products));
+            }
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading.");
+        }
+
+        return orders;
+    }
+
+
+}

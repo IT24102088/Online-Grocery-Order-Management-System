@@ -3,7 +3,6 @@ package com.example.onlinegroceryordermanagementsystem;
 import jakarta.servlet.http.Part;
 
 import java.io.*;
-import java.util.*;
 
 public class TextReaderAndWriter {
 
@@ -17,75 +16,35 @@ public class TextReaderAndWriter {
     }
 
     public boolean writeText(String text) throws IOException {
-        try {
-            writer = new FileWriter(this.filepath);
-            writer.write(text);
-            writer.close();
+        try (BufferedWriter writer = new BufferedWriter(
+                new FileWriter(this.filepath, true))) {  // ← TRUE for append
+
+            writer.append(text);
             return true;
+
         } catch (IOException e) {
-            writer.close();
+            System.err.println("Write failed: " + e.getMessage());
             return false;
         }
     }
-    public boolean checkExists(String text) throws IOException {
-        ArrayList<String> userList = new ArrayList<>();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(this.filepath));
-            String line;
 
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                userList.add(parts[0]);
-            }
-            reader.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred while reading.");
-        }
-
-        return userList.contains(text);
-
-
-    }
-
-    public boolean validUser(String username,String password) throws IOException {
-
-        HashMap<String,String> users = new HashMap<>();
-
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(this.filepath));
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                String Username = parts[0];
-                String Password = parts[1];
-                users.put(Username, Password);
-            }
-            reader.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred while reading.");
-        }
-
-        for (Map.Entry<String, String> entry : users.entrySet()) {
-            if (entry.getKey().equals(username)) {
-                if (entry.getValue().equals(password)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean writeImage(Part filepart){
+    public void writeImage(Part filepart){
 
         try{
             filepart.write(filepath + File.separator + filepart.getSubmittedFileName());
-            return true;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
     }
 
+    public void writeTextInNew(String text) throws IOException {
+        try (PrintWriter writer = new PrintWriter(filepath)) {
+            writer.print("");
+            writer.print(text);
+        } catch (IOException e) {
+            System.err.println("Error clearing the file using PrintWriter: " + e.getMessage());
+        }
+    }
 
 }

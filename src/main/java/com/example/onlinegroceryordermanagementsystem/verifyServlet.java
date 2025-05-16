@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+
 public class verifyServlet extends HttpServlet {
 
     @Override
@@ -15,16 +16,13 @@ public class verifyServlet extends HttpServlet {
 
         HttpSession session = req.getSession();
 
-
-
-        TextReaderAndWriter textReaderAndWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\usernameAndPasswords.txt");
-
         String username=req.getParameter("username");
         String password=req.getParameter("password");
 
-        if(textReaderAndWriter.validUser(username,password)){
+        if(users.validUser(username,password)){
 
             session.setAttribute("username",username);
+            session.setAttribute("password",password);
 
             resp.sendRedirect("shop.jsp");
         }else{

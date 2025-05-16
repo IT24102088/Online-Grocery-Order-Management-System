@@ -19,13 +19,13 @@ public class registerServlet extends HttpServlet {
 
         TextReaderAndWriter textReaderAndWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\usernameAndPasswords.txt");
 
-        if(!textReaderAndWriter.checkExists(username)){
+        if(!users.checkExists(username)){
             if(textReaderAndWriter.writeText(username+","+password+"\n")){
 
                 resp.sendRedirect(req.getContextPath()+"/index.jsp");
 
             }else {
-                System.out.println("Username or password is incorrect");
+                System.out.println("something went wrong");
             }
         }else{
 
