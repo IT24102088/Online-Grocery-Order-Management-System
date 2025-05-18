@@ -60,7 +60,7 @@
             <button type="submit" class="btn btn-login btn-success">Login</button>
 
             <div class="mt-3 text-center">
-                <p>Don't have an account? <a href="register.jsp" class="register-link">Register here</a></p>
+                <p>Don't have an account? <a href="WEB-INF/register.jsp" class="register-link">Register here</a></p>
             </div>
         </form>
     </div>
