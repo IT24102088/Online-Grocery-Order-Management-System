@@ -1,0 +1,70 @@
+@startuml
+
+class users {
+    - userName : String
+    - password : String
+    - role : String
+    - isBanned : boolean
+    - orders : ArrayList<Orders>
+    ---------------------------
+    + getUserName()
+    + getPassword()
+    + getRole()
+    + isBanned()
+    + getOrders()
+    + addOrder()
+    + static getUserList()
+    + static validUser()
+    + static removeUser()
+}
+
+class Product {
+    - id : String
+    - pName : String
+    - pPrice : double
+    - imageName : String
+    ---------------------------
+    + getId()
+    + getpName()
+    + getpPrice()
+    + getImageName()
+    + static getProduct()
+    + static readProductDetails()
+}
+
+class Orders {
+    - orderId : String
+    - products : ArrayList<Product>
+    - date : String
+    - username : String
+    ---------------------------
+    + getOrderId()
+    + getProducts()
+    + getDate()
+    + getUsername()
+    + static getOrders()
+    + static getOrderByUserName()
+    + static deleteOrder()
+}
+
+class Carts {
+    - userName : String
+    - productId : String
+    - quantity : int
+    ---------------------------
+    + getUserName()
+    + getProductId()
+    + getQuantity()
+    + setQuantity()
+    + static addToCart()
+    + static getCarts()
+    + static removeCartById()
+    + static removeCartByUserName()
+}
+
+users "1" o-- "*" Orders : places
+users "1" o-- "*" Carts : owns
+Orders "*" o-- "*" Product : includes
+Carts "*" o-- "1" Product : references
+
+@enduml

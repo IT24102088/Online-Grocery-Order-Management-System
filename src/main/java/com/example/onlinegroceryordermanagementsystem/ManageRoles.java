@@ -5,22 +5,19 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
-@WebServlet("/removeCart")
-public class removeFromCart extends HttpServlet {
+@WebServlet("/changeRole")
+public class ManageRoles extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
 
-        String cartID=req.getParameter("cartId");
-
-        Carts.removeCartById(cartID);
-
-        resp.sendRedirect("cart.jsp");
-
+        String username = req.getParameter("username");
+        users.changeUserRole(username);
+        resp.sendRedirect("adminPanel.jsp");
     }
-
 }

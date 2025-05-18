@@ -5,7 +5,7 @@
 <html>
 <head>
     <title>Your Orders</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
     <style>
         .order-card {
             border: 1px solid #ddd;
@@ -39,16 +39,19 @@
 
     String username = (String) session.getAttribute("username");
     ArrayList<Orders> allOrders = Orders.getOrders();
+
     ArrayList<Orders> userOrders = new ArrayList<>();
 
 
     for(Orders order : allOrders) {
-        System.out.println(order.getUsername());
+
         if(order.getUsername().equals(username)) {
             userOrders.add(order);
+
         }
     }
 %>
+
 <jsp:include page="navbar.jsp" />
 
 <div class="container mt-5">
@@ -56,14 +59,10 @@
 
     <% if(userOrders.isEmpty()) { %>
     <div class="alert alert-info">You haven't placed any orders yet.</div>
-    <!-- Debug output -->
-    <div class="alert alert-warning mt-3">
-        Debug Info:<br>
-        Username: <%= username %><br>
-        Total Orders in System: <%= allOrders.size() %><br>
-        Your Orders: <%= userOrders.size() %>
-    </div>
-    <% } else { %>
+    <% } else {
+        for(Orders orders:userOrders){
+            System.out.println(orders.getProducts());
+        }%>
     <% for(Orders order : userOrders) { %>
     <div class="order-card">
         <div class="order-header">
@@ -76,7 +75,7 @@
         <div class="order-products">
             <% for(Product product : order.getProducts()) { %>
             <div class="product-item">
-                <span><%= product.getpName() %></span>
+                <span>"<%= product.getpName() %>"</span>
                 <span>$<%= String.format("%.2f", product.getpPrice()) %></span>
             </div>
             <% } %>

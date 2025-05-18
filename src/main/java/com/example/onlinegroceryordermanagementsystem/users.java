@@ -4,8 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
 
 public class users {
 
@@ -17,29 +16,36 @@ public class users {
     private boolean isBanned=false;
     static final String path = "C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\usernameAndPasswords.txt";
 
-    users(String userName, String password) {
+    users(String userName, String password, String role,String isBanned) {
 
         this.userName = userName;
         this.password = password;
-        this.role = "user";
-        if(userName.equals("it24102088")){
-            this.role="owner";
-        }
+        this.role = role;
+        this.isBanned=Boolean.parseBoolean(isBanned);
     }
-    users(String userName, String password,ArrayList<Orders> orders) {
+    users(String userName, String password,String role,String isBanned,ArrayList<Orders> orders) {
 
         this.userName = userName;
         this.password = password;
-        this.role = "user";
+        this.role = role;
         this.orders = orders;
-        if(userName.equals("it24102088")){
-            this.role="owner";
-        }
+        this.isBanned=Boolean.parseBoolean(isBanned);
+
 
     }
 
     public boolean isBanned() {
         return isBanned;
+    }
+    public static boolean isBanned(String username) {
+
+        ArrayList<users> userList=getUserList();
+        for(users user:userList){
+            if (user.getUserName().equals(username)) {
+                return user.isBanned;
+            }
+        }
+        return false;
     }
 
     public void setBanned(boolean banned) {
@@ -82,6 +88,17 @@ public class users {
         this.orders = orders;
     }
 
+    public static String getRole(String userName) {
+        ArrayList<users> userList = getUserList();
+
+        for (users user : userList) {
+            if (user.getUserName().equals(userName)) {
+                return user.getRole();
+            }
+        }
+        return null;
+    }
+
     public static ArrayList<users> getUserList() {
         ArrayList<users> userList = new ArrayList<users>();
         try {
@@ -90,7 +107,7 @@ public class users {
 
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                userList.add(new users(parts[0],parts[1],Orders.getOrderByUserName(parts[0])));
+                userList.add(new users(parts[0],parts[1],parts[2],parts[3],Orders.getOrderByUserName(parts[0])));
             }
             reader.close();
         } catch (IOException e) {
@@ -118,31 +135,80 @@ public class users {
     }
     public static boolean validUser(String username,String password) throws IOException {
 
-        HashMap<String,String> users = new HashMap<>();
-
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(path));
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                String Username = parts[0];
-                String Password = parts[1];
-                users.put(Username, Password);
-            }
-            reader.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred while reading.");
-        }
-
-        for (Map.Entry<String, String> entry : users.entrySet()) {
-            if (entry.getKey().equals(username)) {
-                if (entry.getValue().equals(password)) {
-                    return true;
-                }
+        ArrayList<users> userList = getUserList();
+        for (users user : userList) {
+            if (user.getUserName().equals(username) && user.getPassword().equals(password)) {
+                return true;
             }
         }
         return false;
+
+    }
+
+    public static void removeUser(String userName) throws IOException {
+        ArrayList<users> userList = getUserList();
+        userList.removeIf(user -> user.getUserName().equals(userName));
+
+        StringBuilder data;
+        data = new StringBuilder();
+
+        for(users user:userList){
+            data.append(user.getUserName()).append(",").append(user.getPassword()).append(",").append(user.getRole()).append(",").append(String.valueOf(user.isBanned)).append("\n");
+        }
+
+        writeData(data.toString());
+    }
+
+    public static void changeUserRole(String userName) throws IOException {
+
+        ArrayList<users> userList = getUserList();
+
+        for(users user:userList){
+            if (user.getUserName().equals(userName)) {
+                switch (user.getRole()) {
+                    case "admin":
+                        user.setRole("user");
+                        break;
+                    case "user":
+                        user.setRole("admin");
+                        break;
+                }
+                break;
+            }
+        }
+        StringBuilder data;
+        data = new StringBuilder();
+
+        for(users user:userList){
+            data.append(user.getUserName()).append(",").append(user.getPassword()).append(",").append(user.getRole()).append(",").append(user.isBanned).append("\n");
+        }
+
+        writeData(data.toString());
+
+
+    }
+
+    public static void banUnbanUsers(String userName) throws IOException {
+        ArrayList<users> userList = getUserList();
+        for(users user:userList){
+            if (user.getUserName().equals(userName)) {
+                user.setBanned(!user.isBanned());
+            }
+        }
+        StringBuilder data;
+        data = new StringBuilder();
+        for(users user:userList){
+            data.append(user.getUserName()).append(",").append(user.getPassword()).append(",").append(user.getRole()).append(",").append(user.isBanned).append("\n");
+        }
+
+        writeData(data.toString());
+    }
+
+    public static void writeData(String data) throws IOException {
+        TextReaderAndWriter textReaderAndWriter;
+
+        textReaderAndWriter=new TextReaderAndWriter(path);
+        textReaderAndWriter.writeTextInNew(data);
     }
 
 

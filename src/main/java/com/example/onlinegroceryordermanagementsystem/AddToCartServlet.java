@@ -19,10 +19,13 @@ public class AddToCartServlet extends HttpServlet {
 
         String data=cartObject.getUserName()+","+cartObject.getProductId()+","+cartObject.getQuantity()+"\n";
 
+        System.out.println("Working dir: " + System.getProperty("user.dir"));
+
         TextReaderAndWriter textReaderAndWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\cart");
 
         textReaderAndWriter.writeText(data);
 
         response.sendRedirect("shop.jsp");
+
     }
 }

@@ -3,6 +3,7 @@
 <%@ page import="java.util.Collections" %>
 <%@ page import="java.util.Comparator" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Arrays" %>
 <html>
 <head>
     <title>Product List</title>
@@ -51,17 +52,11 @@
 
 
     if(sortBy != null) {
-        switch(sortBy) {
-            case "price_asc":
-                products.sort(Comparator.comparingDouble(Product::getpPrice));
-                break;
-            case "price_desc":
-                products.sort(Comparator.comparingDouble(Product::getpPrice).reversed());
-                break;
-            case "name":
-                products.sort(Comparator.comparing(Product::getpName));
-                break;
-        }
+        products = switch (sortBy) {
+            case "price_asc" -> Product.mergeSort(products, true);
+            case "price_desc" -> Product.mergeSort(products, false);
+            default -> products;
+        };
     }
 %>
 
@@ -82,7 +77,6 @@
                         <option value="">Sort by...</option>
                         <option value="price_asc" <%= "price_asc".equals(sortBy) ? "selected" : "" %>>Price: Low to High</option>
                         <option value="price_desc" <%= "price_desc".equals(sortBy) ? "selected" : "" %>>Price: High to Low</option>
-                        <option value="name" <%= "name".equals(sortBy) ? "selected" : "" %>>Product Name</option>
                     </select>
                 </label>
             </form>
@@ -103,10 +97,20 @@
                     <h5 class="card-title"><%= product.getpName() %></h5>
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <span class="price-tag">$<%= String.format("%.2f",product.getpPrice()) %></span>
-                        <form action="AddToCartServlet" method="post" style="display: inline;">
+                        <form action="AddToCartServlet" method="post" class="add-to-cart-form">
                             <input type="hidden" name="productId" value="<%= product.getId() %>">
-                            <input type="hidden" name="quantity" value="1">
-                            <button type="submit" class="btn btn-sm btn-success">Add to Cart</button>
+                            <div class="input-group" style="width: 140px;">
+                                <label>
+                                    <input type="number"
+                                           name="quantity"
+                                           min="1"
+                                           max="10"
+                                           value="1"
+                                           class="form-control form-control-sm"
+                                           required>
+                                </label>
+                                <button type="submit" class="btn btn-sm btn-success">Add</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -117,6 +121,19 @@
         %>
     </div>
 </div>
-
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.add-to-cart-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const quantityInput = this.querySelector('input[name="quantity"]');
+                if(!quantityInput.value || isNaN(quantityInput.value)){
+                    e.preventDefault();
+                    quantityInput.value = 1;
+                    this.submit();
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

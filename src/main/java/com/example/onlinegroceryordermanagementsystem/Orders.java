@@ -102,5 +102,33 @@ public class Orders {
         return orders;
     }
 
+    public static void deleteOrder(String userName) throws IOException {
+        ArrayList<Orders> orders = getOrders();
+
+        orders.removeIf(order -> order.getUsername().equals(userName));
+
+        StringBuilder oderData;
+        oderData = new StringBuilder();
+        for(Orders order:orders){
+
+            oderData.append(order.orderId).append(",");
+            oderData.append(order.getDate()).append(",");
+            oderData.append(order.getUsername());
+
+            for (Product product: order.getProducts()){
+                oderData.append(",");
+                oderData.append(product.getId());
+            }
+            oderData.append("\n");
+
+        }
+        TextReaderAndWriter textReaderAndWriter;
+
+        textReaderAndWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\orders");
+        textReaderAndWriter.writeTextInNew(oderData.toString());
+
+
+    }
+
 
 }

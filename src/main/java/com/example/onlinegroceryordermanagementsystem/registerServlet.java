@@ -20,7 +20,7 @@ public class registerServlet extends HttpServlet {
         TextReaderAndWriter textReaderAndWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\usernameAndPasswords.txt");
 
         if(!users.checkExists(username)){
-            if(textReaderAndWriter.writeText(username+","+password+"\n")){
+            if(textReaderAndWriter.writeText(username+","+password+","+"user"+","+"false"+"\n")){
 
                 resp.sendRedirect(req.getContextPath()+"/index.jsp");
 

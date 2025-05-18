@@ -9,7 +9,7 @@ public class Carts {
 
     private final String userName;
     private final String productId;
-    private final int quantity;
+    private int quantity;
     static final String path="C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\cart";
 
     static ArrayList<Carts> carts=new ArrayList<>();
@@ -51,7 +51,48 @@ public class Carts {
         return carts;
     }
 
+    public static void removeCartById(String cartID) throws IOException {
+
+        ArrayList<Carts> allCarts=Carts.getCarts();
+
+        allCarts.removeIf(c -> cartID.equals(c.getProductId()));
+
+        StringBuilder data = new StringBuilder();
+
+        for(Carts cart:allCarts){
+            data.append(cart.getUserName()).append(",").append(cart.getProductId()).append(",").append(cart.getQuantity()).append("\n");
+        }
+
+        TextReaderAndWriter textReaderAndWriter;
+
+        textReaderAndWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\cart");
+        textReaderAndWriter.writeTextInNew(data.toString());
+
+    }
+    public static void removeCartByUserName(String username) throws IOException {
+
+        ArrayList<Carts> allCarts=Carts.getCarts();
+
+        allCarts.removeIf(c -> username.equals(c.getUserName()));
+
+        StringBuilder data = new StringBuilder();
+
+        for(Carts cart:allCarts){
+            data.append(cart.getUserName()).append(",").append(cart.getProductId()).append(",").append(cart.getQuantity()).append("\n");
+        }
+
+        TextReaderAndWriter textReaderAndWriter;
+
+        textReaderAndWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\cart");
+        textReaderAndWriter.writeTextInNew(data.toString());
+
+    }
+
     public int getQuantity() {
         return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

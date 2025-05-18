@@ -23,8 +23,13 @@ public class verifyServlet extends HttpServlet {
 
             session.setAttribute("username",username);
             session.setAttribute("password",password);
+            session.setAttribute("role",users.getRole(username));
 
-            resp.sendRedirect("shop.jsp");
+            if(users.isBanned(username)){
+                resp.sendRedirect("index.jsp");
+            }else{
+                resp.sendRedirect("shop.jsp");
+            }
         }else{
             resp.sendRedirect("index.jsp");
         }

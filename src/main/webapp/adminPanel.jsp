@@ -5,8 +5,9 @@
 <html>
 <head>
     <title>Admin Panel</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
     <style>
         .admin-card {
             border-radius: 10px;
@@ -33,10 +34,10 @@
 <body>
 <%-- Security Check --%>
 <%
-    //String role = (String) session.getAttribute("role");
-    //if(!"owner".equals(role) && !"admin".equals(role)) {
-    //    response.sendRedirect("index.jsp");
-   // }
+    String role = (String) session.getAttribute("role");
+    if(!"owner".equals(role) && !"admin".equals(role)) {
+        response.sendRedirect("index.jsp");
+    }
 
     List<users> allUsers = users.getUserList();
     List<Product> allProducts = Product.getProductsList();
@@ -64,7 +65,7 @@
                                 <i class="bi bi-cart-fill"></i> Product Management
                             </a>
                         </li>
-                        <% if("owner".equals("owner")) { %>
+                        <% if("owner".equals(role)) { %>
                         <li class="nav-item">
                             <a class="nav-link" href="#backup" data-bs-toggle="tab">
                                 <i class="bi bi-database"></i> Data Backup
@@ -85,7 +86,7 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5><i class="bi bi-people"></i> User Management</h5>
                             <div class="search-box">
-                                <input type="text" class="form-control" placeholder="Search users..." id="userSearch">
+                                <label for="userSearch"></label><input type="text" class="form-control" placeholder="Search users..." id="userSearch">
                             </div>
                         </div>
                         <div class="card-body">
@@ -112,18 +113,18 @@
 
                                         <form action="banUsers" method="post" class="d-inline">
                                             <input type="hidden" name="action" value="toggleBan">
-                                            <input type="hidden" name="userId" value="<%= user.getUserName() %>">
+                                            <input type="hidden" name="username" value="<%= user.getUserName() %>">
                                             <button type="submit" class="btn btn-sm <%= user.isBanned() ? "btn-success" : "btn-warning" %>">
                                                 <%= user.isBanned() ? "Unban" : "Ban" %>
                                             </button>
                                         </form>
 
                                         <!-- Role Management (Only for owner) -->
-                                        <% if("owner".equals("owner") && !user.getUserName().equals(session.getAttribute("username"))) { %>
+                                        <% if("owner".equals(role) && !user.getUserName().equals(session.getAttribute("username"))) { %>
                                         <% if(!"owner".equals(user.getRole())) { %>
-                                        <form action="AdminServlet" method="post" class="d-inline">
+                                        <form action="changeRole" method="post" class="d-inline">
                                             <input type="hidden" name="action" value="changeRole">
-                                            <input type="hidden" name="userId" value="<%= user.getUserName() %>">
+                                            <input type="hidden" name="username" value="<%= user.getUserName() %>">
                                             <input type="hidden" name="newRole" value="<%= "admin".equals(user.getRole()) ? "user" : "admin" %>">
                                             <button type="submit" class="btn btn-sm btn-info">
                                                 <%= "admin".equals(user.getRole()) ? "Demote" : "Promote" %>
@@ -173,15 +174,13 @@
                                     </td>
                                     <td><%= product.getpName() %></td>
                                     <td>$<%= String.format("%.2f", product.getpPrice()) %></td>
-                                    <!--<td>< // product.getStock() %></td>
-                                    <td>< product.getCategory() %></td>-->
 
                                     <td>
                                         <a href="editProduct.jsp?id=<%= product.getId() %>"
                                            class="btn btn-sm btn-primary">
                                             <i class="bi bi-pencil"></i> Edit
                                         </a>
-                                        <form action="AdminServlet" method="post" class="d-inline">
+                                        <form action="deleteProduct" method="post" class="d-inline">
                                             <input type="hidden" name="action" value="deleteProduct">
                                             <input type="hidden" name="productId" value="<%= product.getId() %>">
                                             <button type="submit" class="btn btn-sm btn-danger">
@@ -198,7 +197,7 @@
                 </div>
 
                 <!-- Backup Tab (Owner Only) -->
-                <% if("owner".equals("owner")) { %>
+                <% if("owner".equals(role)) { %>
                 <div class="tab-pane fade" id="backup">
                     <div class="card admin-card">
                         <div class="card-header">
@@ -212,7 +211,7 @@
                                             <i class="bi bi-database-check fs-1 text-primary"></i>
                                             <h5 class="mt-3">Create System Backup</h5>
                                             <p>Backup all product and user data</p>
-                                            <form action="AdminServlet" method="post">
+                                            <form action="backup" method="post">
                                                 <input type="hidden" name="action" value="backup">
                                                 <button type="submit" class="btn btn-primary">
                                                     <i class="bi bi-download"></i> Create Backup
@@ -227,9 +226,13 @@
                                             <i class="bi bi-clock-history fs-1 text-info"></i>
                                             <h5 class="mt-3">Restore Backup</h5>
                                             <p>Restore from previous backup</p>
-                                            <button class="btn btn-info" >
-                                                <i class="bi bi-upload"></i> Restore
-                                            </button>
+
+                                            <!-- Minimal form to call servlet -->
+                                            <form action="RestoreBackupServlet" method="post">
+                                                <button type="submit" class="btn btn-info">
+                                                    <i class="bi bi-upload"></i> Restore
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
