@@ -1,70 +1,155 @@
-@startuml
+@startuml AdminPanel_Complete_Diagram_Final
 
-class users {
-    - userName : String
-    - password : String
-    - role : String
-    - isBanned : boolean
-    - orders : ArrayList<Orders>
-    ---------------------------
-    + getUserName()
-    + getPassword()
-    + getRole()
-    + isBanned()
-    + getOrders()
-    + addOrder()
-    + static getUserList()
-    + static validUser()
-    + static removeUser()
+' ====== FORMATTING ======
+skinparam class {
+    BackgroundColor<<JSP>> #ffdddd
+    BackgroundColor<<Servlet>> #ddddff
+    BackgroundColor<<Model>> #ddffdd
+    BackgroundColor<<Utility>> #ffffcc
+    FontSize 12
+    StaticFontColor #0066cc
+    StaticFontStyle bold
+    ArrowColor #333333
 }
 
-class Product {
-    - id : String
-    - pName : String
-    - pPrice : double
-    - imageName : String
-    ---------------------------
-    + getId()
-    + getpName()
-    + getpPrice()
-    + getImageName()
-    + static getProduct()
-    + static readProductDetails()
+' ====== CORE COMPONENTS ======
+
+package "Frontend" {
+  class "adminPanel.jsp" <<JSP>> {
+    + displayUsersList()
+    + displayProductsList()
+  }
+
+  class "addproduct.jsp" <<JSP>> {
+    + renderAddForm()
+  }
+
+  class "editproduct.jsp" <<JSP>> {
+    + renderEditForm()
+  }
 }
 
-class Orders {
-    - orderId : String
-    - products : ArrayList<Product>
-    - date : String
-    - username : String
-    ---------------------------
-    + getOrderId()
-    + getProducts()
-    + getDate()
-    + getUsername()
-    + static getOrders()
-    + static getOrderByUserName()
-    + static deleteOrder()
+package "Controllers" {
+  class "AddProductServlet" <<Servlet>> {
+    + doPost()
+  }
+
+  class "changeProductDetails" <<Servlet>> {
+    + doPost()
+  }
+
+  class "banUsersServlet" <<Servlet>> {
+    + doPost()
+  }
+
+  class "ManageRoles" <<Servlet>> {
+    + doPost()
+  }
+
+  class "backupServlet" <<Servlet>> {
+    + doPost()
+  }
+
+  class "restore" <<Servlet>> {
+    + doPost()
+  }
 }
 
-class Carts {
-    - userName : String
-    - productId : String
-    - quantity : int
-    ---------------------------
-    + getUserName()
-    + getProductId()
-    + getQuantity()
-    + setQuantity()
-    + static addToCart()
-    + static getCarts()
-    + static removeCartById()
-    + static removeCartByUserName()
+package "Models" {
+  class "Product" <<Model>> {
+    __{static}__ + getProduct(id):Product
+    __{static}__ + deleteProduct(id)
+    + getId():String
+    + getImageName():String
+  }
+
+  class "users" <<Model>> {
+    __{static}__ + banUnbanUsers()
+    __{static}__ + changeUserRole()
+    + getRole():String
+  }
+
+  class "Orders" <<Model>> {
+    __{static}__ + getOrder(id):Orders
+    + getProducts():ArrayList<Product>
+  }
+
+  class "Carts" <<Model>> {
+    __{static}__ + removeCartById()
+    + getProductId():String
+  }
 }
 
-users "1" o-- "*" Orders : places
-users "1" o-- "*" Carts : owns
-Orders "*" o-- "*" Product : includes
-Carts "*" o-- "1" Product : references
+package "Utilities" {
+  class "backupManager" <<Utility>> {
+    __{static}__ + backupFiles()
+    __{static}__ + restoreBackup()
+  }
+
+  class "TextReaderAndWriter" <<Utility>> {
+    + writeImage()
+    __{static}__ + writeTextInNew()
+  }
+}
+
+' ====== FRONTEND-CONTROLLER CONNECTIONS ======
+"adminPanel.jsp" --> "banUsersServlet" : "POST ban/unban"
+"adminPanel.jsp" --> "ManageRoles" : "POST role change"
+"adminPanel.jsp" --> "backupServlet" : "POST backup"
+"adminPanel.jsp" --> "restore" : "POST restore"
+"addproduct.jsp" --> "AddProductServlet" : "POST new product"
+"editproduct.jsp" --> "changeProductDetails" : "POST edits"
+
+' ====== CONTROLLER-MODEL OPERATIONS ======
+"AddProductServlet" --> "Product" : "1. create"
+"changeProductDetails" --> "Product" : "2. update"
+"deleteProductServlet" --> "Product" : "3. delete"
+"banUsersServlet" --> "users" : "4. toggle ban"
+"ManageRoles" --> "users" : "5. change role"
+"backupServlet" --> "backupManager" : "6. initiate"
+"restore" --> "backupManager" : "7. restore"
+
+' ====== MODEL DEPENDENCIES ======
+"users" "1" *-- "0..*" "Orders" : "has orders"
+"users" "1" *-- "0..*" "Carts" : "has cart items"
+"Orders" "1" *-- "1..*" "Product" : "contains"
+"Carts" --> "Product" : "references"
+
+' ====== PERSISTENCE LAYER ======
+"users" ..> "TextReaderAndWriter" : "saves to"
+"Product" ..> "TextReaderAndWriter" : "saves to"
+"Orders" ..> "TextReaderAndWriter" : "saves to"
+"Carts" ..> "TextReaderAndWriter" : "saves to"
+"backupManager" ..> "TextReaderAndWriter" : "uses for"
+
+' ====== SPECIAL RELATIONSHIPS ======
+"adminPanel.jsp" ..> "users" : "lists all users"
+"adminPanel.jsp" ..> "Product" : "lists products"
+"editproduct.jsp" ..> "Product" : "pre-fills form"
+
+' ====== NOTES ======
+note top of "users"
+  Manages:
+  - User authentication
+  - Role hierarchy
+  - Ban states
+  via TextReaderAndWriter
+end note
+
+note right of "Product"
+  Persistence flow:
+  JSP → Servlet → Model
+  → TextReaderAndWriter
+  → text files
+end note
+
+legend
+  | Color | Meaning |
+  | <#ffdddd> | View (JSP) |
+  | <#ddddff> | Controller (Servlet) |
+  | <#ddffdd> | Model |
+  | <#ffffcc> | Utility |
+  | <#0066cc> | Static methods |
+endlegend
 
 @enduml
