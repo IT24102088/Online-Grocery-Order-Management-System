@@ -21,7 +21,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 17px;
             margin-top: 20px;
         }
         .btn-continue:hover {

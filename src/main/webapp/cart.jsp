@@ -33,7 +33,7 @@
         }
         .summary-card {
             background-color: white;
-            border-radius: 10px;
+            border-radius: 11px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             padding: 20px;
             position: sticky;
