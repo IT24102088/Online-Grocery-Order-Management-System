@@ -11,15 +11,23 @@ import java.io.IOException;
 
 @WebServlet("/AddToCartServlet")
 public class AddToCartServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-        HttpSession session=request.getSession();
+        HttpSession session = request.getSession();
 
-        Carts cartObject=new Carts((String) session.getAttribute("username"),request.getParameter("productId"),Integer.parseInt(request.getParameter("quantity")));
+        Carts cartObject = new Carts(
+                (String) session.getAttribute("username"),
+                request.getParameter("productId"),
+                Integer.parseInt(request.getParameter("quantity"))
+        );
 
-        String data=cartObject.getUserName()+","+cartObject.getProductId()+","+cartObject.getQuantity()+"\n";
+        String data = cartObject.getUserName() + "," + cartObject.getProductId() + "," + cartObject.getQuantity() + "\n";
 
-        TextReaderAndWriter textReaderAndWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\cart");
+        TextReaderAndWriter textReaderAndWriter = new TextReaderAndWriter(
+                "C:\\Users\\User\\OneDrive\\Desktop\\New folder\\Online-Grocery-Order-Management-System-master\\Online-Grocery-Order-Management-System-master\\src\\main\\java\\com\\example\\onlinegroceryordermanagementsystem"
+        );
 
         textReaderAndWriter.writeText(data);
 

@@ -12,10 +12,11 @@ import java.io.IOException;
 public class removeFromCart extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
+        // Redirect to the cart page after processing
         resp.sendRedirect("cart.jsp");
-
     }
 
 }
