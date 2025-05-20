@@ -15,8 +15,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 
-@WebServlet("/processOrder")
-public class processOrder extends HttpServlet {
+@WebServlet("/addtoqueue")
+public class addToQueue extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 

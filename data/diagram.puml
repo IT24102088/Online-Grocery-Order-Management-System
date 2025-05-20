@@ -1,155 +1,134 @@
-@startuml AdminPanel_Complete_Diagram_Final
+classDiagram
+    class Product {
+        -String id
+        -String pName
+        -double pPrice
+        -String imageName
+        -static ArrayList~Product~ productsList
+        -static String filepath
+        +Product(String id, String pName, double pPrice, String imageName)
+        +String getId()
+        +String getpName()
+        +void setpName(String pName)
+        +double getpPrice()
+        +void setpPrice(double pPrice)
+        +String getImageName()
+        +void setImageName(String imageName)
+        +static void setProductsList(ArrayList~Product~ productsList)
+        +static ArrayList~Product~ getProductsList()
+        +static void deleteProduct(String id)
+        +static Product getProduct(String id)
+        +static ArrayList~Product~ readProductDetails()
+        +static ArrayList~Product~ mergeSort(ArrayList~Product~ products, boolean ascending)
+        -static ArrayList~Product~ merge(ArrayList~Product~ left, ArrayList~Product~ right, boolean ascending)
+    }
 
-' ====== FORMATTING ======
-skinparam class {
-    BackgroundColor<<JSP>> #ffdddd
-    BackgroundColor<<Servlet>> #ddddff
-    BackgroundColor<<Model>> #ddffdd
-    BackgroundColor<<Utility>> #ffffcc
-    FontSize 12
-    StaticFontColor #0066cc
-    StaticFontStyle bold
-    ArrowColor #333333
-}
+    class Orders {
+        -String orderId
+        -ArrayList~Product~ products
+        -String date
+        -String username
+        -static String filepath
+        +Orders(String orderId, String date, String username, ArrayList~Product~ product)
+        +String getOrderId()
+        +void setOrderId(String orderId)
+        +ArrayList~Product~ getProducts()
+        +void setProducts(ArrayList~Product~ products)
+        +String getDate()
+        +void setDate(String date)
+        +String getUsername()
+        +void setUsername(String username)
+        +static Orders getOrder(String orderId)
+        +static ArrayList~Orders~ getOrderByUserName(String username)
+        +static ArrayList~Orders~ getOrders()
+        +static void deleteOrder(String userName)
+    }
 
-' ====== CORE COMPONENTS ======
+    class Carts {
+        -String userName
+        -String productId
+        -int quantity
+        -static String path
+        -static ArrayList~Carts~ carts
+        +Carts(String userName, String productId, int quantity)
+        +String getUserName()
+        +String getProductId()
+        +int getQuantity()
+        +void setQuantity(int quantity)
+        +static void addToCart(Carts cart)
+        +static ArrayList~Carts~ getCarts()
+        +static void removeCartById(String cartID)
+        +static void removeCartByUserName(String username)
+    }
 
-package "Frontend" {
-  class "adminPanel.jsp" <<JSP>> {
-    + displayUsersList()
-    + displayProductsList()
-  }
+    class users {
+        -String userName
+        -String password
+        -ArrayList~Orders~ orders
+        -String role
+        -boolean isBanned
+        -static ArrayList~users~ userList
+        -static String path
+        +users(String userName, String password, String role, String isBanned)
+        +users(String userName, String password, String role, String isBanned, ArrayList~Orders~ orders)
+        +String getUserName()
+        +void setUserName(String userName)
+        +String getPassword()
+        +void setPassword(String password)
+        +ArrayList~Orders~ getOrders()
+        +void setOrders(ArrayList~Orders~ orders)
+        +String getRole()
+        +void setRole(String role)
+        +boolean isBanned()
+        +void setBanned(boolean banned)
+        +void addOrder(Orders order)
+        +static boolean isBanned(String username)
+        +static String getRole(String userName)
+        +static ArrayList~users~ getUserList()
+        +static boolean checkExists(String text)
+        +static boolean validUser(String username, String password)
+        +static void removeUser(String userName)
+        +static void changeUserRole(String userName)
+        +static void banUnbanUsers(String userName)
+        +static void writeData(String data)
+    }
 
-  class "addproduct.jsp" <<JSP>> {
-    + renderAddForm()
-  }
+    class TextReaderAndWriter {
+        <<external>>
+        +writeText()
+        +writeTextInNew()
+        +writeImage()
+    }
 
-  class "editproduct.jsp" <<JSP>> {
-    + renderEditForm()
-  }
-}
+    class AddProductServlet {
+        -doPost(HttpServletRequest req, HttpServletResponse resp)
+    }
 
-package "Controllers" {
-  class "AddProductServlet" <<Servlet>> {
-    + doPost()
-  }
+    class AddToCartServlet {
+        -doPost(HttpServletRequest request, HttpServletResponse response)
+    }
 
-  class "changeProductDetails" <<Servlet>> {
-    + doPost()
-  }
+    class processOrder {
+        -doPost(HttpServletRequest req, HttpServletResponse resp)
+    }
 
-  class "banUsersServlet" <<Servlet>> {
-    + doPost()
-  }
+    class backupManager {
+        +static void backupFiles(String[] filePaths, String backupDirPath)
+        +static void restoreBackup(String zipFilePath, String restoreToDirPath)
+    }
 
-  class "ManageRoles" <<Servlet>> {
-    + doPost()
-  }
+    users "1" -- "many" Orders : has
+    Orders "1" -- "many" Product : contains
+    users "1" -- "many" Carts : has
+    Carts "1" -- "1" Product : references
 
-  class "backupServlet" <<Servlet>> {
-    + doPost()
-  }
+    AddProductServlet --> Product : creates
+    AddProductServlet --> TextReaderAndWriter : uses
 
-  class "restore" <<Servlet>> {
-    + doPost()
-  }
-}
+    AddToCartServlet --> Carts : creates
+    AddToCartServlet --> TextReaderAndWriter : uses
 
-package "Models" {
-  class "Product" <<Model>> {
-    __{static}__ + getProduct(id):Product
-    __{static}__ + deleteProduct(id)
-    + getId():String
-    + getImageName():String
-  }
-
-  class "users" <<Model>> {
-    __{static}__ + banUnbanUsers()
-    __{static}__ + changeUserRole()
-    + getRole():String
-  }
-
-  class "Orders" <<Model>> {
-    __{static}__ + getOrder(id):Orders
-    + getProducts():ArrayList<Product>
-  }
-
-  class "Carts" <<Model>> {
-    __{static}__ + removeCartById()
-    + getProductId():String
-  }
-}
-
-package "Utilities" {
-  class "backupManager" <<Utility>> {
-    __{static}__ + backupFiles()
-    __{static}__ + restoreBackup()
-  }
-
-  class "TextReaderAndWriter" <<Utility>> {
-    + writeImage()
-    __{static}__ + writeTextInNew()
-  }
-}
-
-' ====== FRONTEND-CONTROLLER CONNECTIONS ======
-"adminPanel.jsp" --> "banUsersServlet" : "POST ban/unban"
-"adminPanel.jsp" --> "ManageRoles" : "POST role change"
-"adminPanel.jsp" --> "backupServlet" : "POST backup"
-"adminPanel.jsp" --> "restore" : "POST restore"
-"addproduct.jsp" --> "AddProductServlet" : "POST new product"
-"editproduct.jsp" --> "changeProductDetails" : "POST edits"
-
-' ====== CONTROLLER-MODEL OPERATIONS ======
-"AddProductServlet" --> "Product" : "1. create"
-"changeProductDetails" --> "Product" : "2. update"
-"deleteProductServlet" --> "Product" : "3. delete"
-"banUsersServlet" --> "users" : "4. toggle ban"
-"ManageRoles" --> "users" : "5. change role"
-"backupServlet" --> "backupManager" : "6. initiate"
-"restore" --> "backupManager" : "7. restore"
-
-' ====== MODEL DEPENDENCIES ======
-"users" "1" *-- "0..*" "Orders" : "has orders"
-"users" "1" *-- "0..*" "Carts" : "has cart items"
-"Orders" "1" *-- "1..*" "Product" : "contains"
-"Carts" --> "Product" : "references"
-
-' ====== PERSISTENCE LAYER ======
-"users" ..> "TextReaderAndWriter" : "saves to"
-"Product" ..> "TextReaderAndWriter" : "saves to"
-"Orders" ..> "TextReaderAndWriter" : "saves to"
-"Carts" ..> "TextReaderAndWriter" : "saves to"
-"backupManager" ..> "TextReaderAndWriter" : "uses for"
-
-' ====== SPECIAL RELATIONSHIPS ======
-"adminPanel.jsp" ..> "users" : "lists all users"
-"adminPanel.jsp" ..> "Product" : "lists products"
-"editproduct.jsp" ..> "Product" : "pre-fills form"
-
-' ====== NOTES ======
-note top of "users"
-  Manages:
-  - User authentication
-  - Role hierarchy
-  - Ban states
-  via TextReaderAndWriter
-end note
-
-note right of "Product"
-  Persistence flow:
-  JSP → Servlet → Model
-  → TextReaderAndWriter
-  → text files
-end note
-
-legend
-  | Color | Meaning |
-  | <#ffdddd> | View (JSP) |
-  | <#ddddff> | Controller (Servlet) |
-  | <#ddffdd> | Model |
-  | <#ffffcc> | Utility |
-  | <#0066cc> | Static methods |
-endlegend
-
-@enduml
+    processOrder --> Orders : creates
+    processOrder --> Carts : processes
+    processOrder --> Product : references
+    processOrder --> TextReaderAndWriter : uses
