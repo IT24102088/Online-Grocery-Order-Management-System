@@ -9,6 +9,7 @@ public class backupManager {
 
     // Backup files to a ZIP archive
     public static void backupFiles(String[] filePaths, String backupDirPath) {
+
         try {
             File backupDir = new File(backupDirPath);
             if (!backupDir.exists()) {

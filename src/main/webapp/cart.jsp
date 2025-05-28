@@ -150,7 +150,7 @@
                     <h5>$<%= String.format("%.2f", total + 5) %></h5>
                 </div>
                 <div>
-                    <form action="processOrder" method="post" class="d-grid">
+                    <form action="addtoqueue" method="post" class="d-grid">
                         <button type="submit" class="btn btn-success w-100 py-2">Proceed to Checkout</button>
                     </form>
                     <form action="shop.jsp" method="get" class="d-grid mt-2">

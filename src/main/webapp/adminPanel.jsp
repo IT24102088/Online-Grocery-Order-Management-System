@@ -246,24 +246,15 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
 <script>
     // User search functionality
     document.getElementById('userSearch').addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase();
         document.querySelectorAll('#users tbody tr.user-row').forEach(row => {
             const username = row.cells[0].textContent.toLowerCase();
-            const email = row.cells[1].textContent.toLowerCase();
-            row.style.display = (username.includes(searchTerm) || email.includes(searchTerm)) ? '' : 'none';
+            row.style.display = username.includes(searchTerm) ? '' : 'none';
         });
-    });
-
-    // Initialize tab if coming from another page with hash
-    window.addEventListener('DOMContentLoaded', () => {
-        if(window.location.hash) {
-            const tabTrigger = new bootstrap.Tab(document.querySelector(`a[href="${window.location.hash}"]`));
-            tabTrigger.show();
-        }
     });
 </script>
 </body>

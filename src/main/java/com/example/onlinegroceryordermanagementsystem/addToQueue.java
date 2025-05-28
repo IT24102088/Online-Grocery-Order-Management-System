@@ -15,8 +15,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 
-@WebServlet("/processOrder")
-public class processOrder extends HttpServlet {
+@WebServlet("/addtoqueue")
+public class addToQueue extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -41,6 +41,18 @@ public class processOrder extends HttpServlet {
             productList.add(Product.getProduct(cart.getProductId()));
         }
 
+        TextReaderAndWriter textReaderAndWriter;
+
+        StringBuilder data;
+        data = new StringBuilder();
+
+        for(Carts cart:cartList){
+            data.append(cart.getUserName()).append(",").append(cart.getProductId()).append(",").append(cart.getQuantity()).append("\n");
+        }
+
+        textReaderAndWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\cart");
+        textReaderAndWriter.writeTextInNew(data.toString());
+
         LocalDate currentDate = LocalDate.now();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -60,21 +72,12 @@ public class processOrder extends HttpServlet {
             oderData.append(product.getId());
         }
         oderData.append("\n");
-
-        TextReaderAndWriter textReaderAndWriter;
-
-        textReaderAndWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\orders");
+        textReaderAndWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\queueData");
         textReaderAndWriter.writeText(oderData.toString());
 
-        StringBuilder data;
-        data = new StringBuilder();
 
-        for(Carts cart:cartList){
-            data.append(cart.getUserName()).append(",").append(cart.getProductId()).append(",").append(cart.getQuantity()).append("\n");
-        }
-
-        textReaderAndWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\cart");
-        textReaderAndWriter.writeTextInNew(data.toString());
+        OrderQueue orderQueue= (OrderQueue) getServletContext().getAttribute("orderQueue");
+        orderQueue.enqueue(order);
 
         resp.sendRedirect("checkout.jsp");
 

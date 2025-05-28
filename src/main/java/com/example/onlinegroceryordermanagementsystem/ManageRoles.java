@@ -14,7 +14,7 @@ public class ManageRoles extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
+
 
         String username = req.getParameter("username");
         users.changeUserRole(username);

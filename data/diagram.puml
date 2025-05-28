@@ -1,70 +1,134 @@
-@startuml
+classDiagram
+    class Product {
+        -String id
+        -String pName
+        -double pPrice
+        -String imageName
+        -static ArrayList~Product~ productsList
+        -static String filepath
+        +Product(String id, String pName, double pPrice, String imageName)
+        +String getId()
+        +String getpName()
+        +void setpName(String pName)
+        +double getpPrice()
+        +void setpPrice(double pPrice)
+        +String getImageName()
+        +void setImageName(String imageName)
+        +static void setProductsList(ArrayList~Product~ productsList)
+        +static ArrayList~Product~ getProductsList()
+        +static void deleteProduct(String id)
+        +static Product getProduct(String id)
+        +static ArrayList~Product~ readProductDetails()
+        +static ArrayList~Product~ mergeSort(ArrayList~Product~ products, boolean ascending)
+        -static ArrayList~Product~ merge(ArrayList~Product~ left, ArrayList~Product~ right, boolean ascending)
+    }
 
-class users {
-    - userName : String
-    - password : String
-    - role : String
-    - isBanned : boolean
-    - orders : ArrayList<Orders>
-    ---------------------------
-    + getUserName()
-    + getPassword()
-    + getRole()
-    + isBanned()
-    + getOrders()
-    + addOrder()
-    + static getUserList()
-    + static validUser()
-    + static removeUser()
-}
+    class Orders {
+        -String orderId
+        -ArrayList~Product~ products
+        -String date
+        -String username
+        -static String filepath
+        +Orders(String orderId, String date, String username, ArrayList~Product~ product)
+        +String getOrderId()
+        +void setOrderId(String orderId)
+        +ArrayList~Product~ getProducts()
+        +void setProducts(ArrayList~Product~ products)
+        +String getDate()
+        +void setDate(String date)
+        +String getUsername()
+        +void setUsername(String username)
+        +static Orders getOrder(String orderId)
+        +static ArrayList~Orders~ getOrderByUserName(String username)
+        +static ArrayList~Orders~ getOrders()
+        +static void deleteOrder(String userName)
+    }
 
-class Product {
-    - id : String
-    - pName : String
-    - pPrice : double
-    - imageName : String
-    ---------------------------
-    + getId()
-    + getpName()
-    + getpPrice()
-    + getImageName()
-    + static getProduct()
-    + static readProductDetails()
-}
+    class Carts {
+        -String userName
+        -String productId
+        -int quantity
+        -static String path
+        -static ArrayList~Carts~ carts
+        +Carts(String userName, String productId, int quantity)
+        +String getUserName()
+        +String getProductId()
+        +int getQuantity()
+        +void setQuantity(int quantity)
+        +static void addToCart(Carts cart)
+        +static ArrayList~Carts~ getCarts()
+        +static void removeCartById(String cartID)
+        +static void removeCartByUserName(String username)
+    }
 
-class Orders {
-    - orderId : String
-    - products : ArrayList<Product>
-    - date : String
-    - username : String
-    ---------------------------
-    + getOrderId()
-    + getProducts()
-    + getDate()
-    + getUsername()
-    + static getOrders()
-    + static getOrderByUserName()
-    + static deleteOrder()
-}
+    class users {
+        -String userName
+        -String password
+        -ArrayList~Orders~ orders
+        -String role
+        -boolean isBanned
+        -static ArrayList~users~ userList
+        -static String path
+        +users(String userName, String password, String role, String isBanned)
+        +users(String userName, String password, String role, String isBanned, ArrayList~Orders~ orders)
+        +String getUserName()
+        +void setUserName(String userName)
+        +String getPassword()
+        +void setPassword(String password)
+        +ArrayList~Orders~ getOrders()
+        +void setOrders(ArrayList~Orders~ orders)
+        +String getRole()
+        +void setRole(String role)
+        +boolean isBanned()
+        +void setBanned(boolean banned)
+        +void addOrder(Orders order)
+        +static boolean isBanned(String username)
+        +static String getRole(String userName)
+        +static ArrayList~users~ getUserList()
+        +static boolean checkExists(String text)
+        +static boolean validUser(String username, String password)
+        +static void removeUser(String userName)
+        +static void changeUserRole(String userName)
+        +static void banUnbanUsers(String userName)
+        +static void writeData(String data)
+    }
 
-class Carts {
-    - userName : String
-    - productId : String
-    - quantity : int
-    ---------------------------
-    + getUserName()
-    + getProductId()
-    + getQuantity()
-    + setQuantity()
-    + static addToCart()
-    + static getCarts()
-    + static removeCartById()
-    + static removeCartByUserName()
-}
+    class TextReaderAndWriter {
+        <<external>>
+        +writeText()
+        +writeTextInNew()
+        +writeImage()
+    }
 
-users "1" o-- "*" Orders : places
-users "1" o-- "*" Carts : owns
-Orders "*" o-- "*" Product : includes
-Carts "*" o-- "1" Product : references
+    class AddProductServlet {
+        -doPost(HttpServletRequest req, HttpServletResponse resp)
+    }
 
-@enduml
+    class AddToCartServlet {
+        -doPost(HttpServletRequest request, HttpServletResponse response)
+    }
+
+    class processOrder {
+        -doPost(HttpServletRequest req, HttpServletResponse resp)
+    }
+
+    class backupManager {
+        +static void backupFiles(String[] filePaths, String backupDirPath)
+        +static void restoreBackup(String zipFilePath, String restoreToDirPath)
+    }
+
+    users "1" -- "many" Orders : has
+    Orders "1" -- "many" Product : contains
+    users "1" -- "many" Carts : has
+    Carts "1" -- "1" Product : references
+
+    AddProductServlet --> Product : creates
+    AddProductServlet --> TextReaderAndWriter : uses
+
+    AddToCartServlet --> Carts : creates
+    AddToCartServlet --> TextReaderAndWriter : uses
+
+    processOrder --> Orders : creates
+    processOrder --> Carts : processes
+    processOrder --> Product : references
+    processOrder --> TextReaderAndWriter : uses

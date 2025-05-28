@@ -22,10 +22,15 @@
                     <a class="nav-link <%= request.getRequestURI().endsWith("profile.jsp") ? "active" : "" %>"
                        href="profile.jsp">Profile</a>
                 </li>
+                <%
+                    String role = (String) session.getAttribute("role");
+                    if ("owner".equals(role) || "admin".equals(role)) {
+                %>
                 <li class="nav-item">
                     <a class="nav-link <%= request.getRequestURI().endsWith("adminPanel.jsp") ? "active" : "" %>"
                        href="adminPanel.jsp">Admin</a>
                 </li>
+                <% } %>
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item">
