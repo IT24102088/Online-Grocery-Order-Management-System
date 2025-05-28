@@ -72,13 +72,12 @@ public class addToQueue extends HttpServlet {
             oderData.append(product.getId());
         }
         oderData.append("\n");
-
-
-
-        textReaderAndWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\orders");
+        textReaderAndWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\queueData");
         textReaderAndWriter.writeText(oderData.toString());
 
 
+        OrderQueue orderQueue= (OrderQueue) getServletContext().getAttribute("orderQueue");
+        orderQueue.enqueue(order);
 
         resp.sendRedirect("checkout.jsp");
 

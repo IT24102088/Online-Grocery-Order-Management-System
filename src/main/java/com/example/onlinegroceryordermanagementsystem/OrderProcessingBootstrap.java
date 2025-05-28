@@ -16,6 +16,7 @@ public class OrderProcessingBootstrap implements ServletContextListener {
 
         // Initialize the order queue
         orderQueue = new OrderQueue();
+        orderQueue.loadOrders();
 
         // Create and start worker thread
         worker = new OrderProcessingWorker(orderQueue);

@@ -1,5 +1,7 @@
 package com.example.onlinegroceryordermanagementsystem;
 
+import java.io.IOException;
+
 public class OrderProcessingWorker implements Runnable {
     private final OrderQueue orderQueue;
     private boolean running = true;
@@ -35,10 +37,25 @@ public class OrderProcessingWorker implements Runnable {
         System.out.println("Order processing worker stopped");
     }
 
-    private void processOrder(Orders order) {
-        // Add to customer's order history
+    private void processOrder(Orders order) throws IOException {
+
+        StringBuilder oderData;
+        oderData = new StringBuilder();
+        oderData.append(order.getOrderId()).append(",");
+        oderData.append(order.getDate()).append(",");
+        oderData.append(order.getUsername());
+        for (Product product: order.getProducts()){
+            oderData.append(",");
+            oderData.append(product.getId());
+        }
+        oderData.append("\n");
+        TextReaderAndWriter textReaderAndWriter=new TextReaderAndWriter("C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\orders");
+        textReaderAndWriter.writeText(oderData.toString());
+
+        this.orderQueue.deleteFromQueue(order);
 
     }
+
 
     public void stop() {
         running = false;
