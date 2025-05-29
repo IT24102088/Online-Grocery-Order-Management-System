@@ -8,148 +8,137 @@ import java.util.Arrays;
 
 public class OrderQueue {
 
-    private static final String PATH="C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\queueData";
+    private static final String PATH =
+            "C:\\Users\\supun\\OneDrive\\Desktop\\New folder (12)\\OnlineGroceryOrderManagementSystem\\data\\queueData";
 
-    private static class Node {
-        Orders order;
-        Node next;
-
-        public Node(Orders order) {
-            this.order = order;
-            this.next = null;
-        }
-    }
-
-    private Node front;
-    private Node rear;
+    private Orders[] data;
+    private int front;
+    private int rear;
     private int size;
     private boolean processingEnabled = true;
 
+    private static final int DEFAULT_CAPACITY = 16;
+
     public OrderQueue() {
-        front = rear = null;
-        size = 0;
+        this.data   = new Orders[DEFAULT_CAPACITY];
+        this.front  = 0;
+        this.rear   = 0;
+        this.size   = 0;
     }
 
+
     public synchronized void enqueue(Orders order) {
-        Node newNode = new Node(order);
-        if (rear == null) {
-            front = rear = newNode;
-        } else {
-            rear.next = newNode;
-            rear = newNode;
-        }
+        ensureCapacity(size + 1);
+
+        data[rear] = order;
+        rear = (rear + 1) % data.length;
         size++;
-        notifyAll(); // Notify waiting worker threads
+
+        notifyAll();
     }
 
     public synchronized Orders dequeue() throws InterruptedException {
-        while (front == null && processingEnabled) {
-            wait(); // Wait for orders if queue is empty
+        while (size == 0 && processingEnabled) {
+            wait();
         }
-
         if (!processingEnabled) {
             return null;
         }
 
-        Node temp = front;
-        front = front.next;
-
-        if (front == null) {
-            rear = null;
-        }
-
+        Orders result = data[front];
+        data[front]   = null;
+        front         = (front + 1) % data.length;
         size--;
-        return temp.order;
+
+        return result;
     }
+
 
     public synchronized void stopProcessing() {
         processingEnabled = false;
-        notifyAll(); // Wake up any waiting threads
+        notifyAll();
     }
 
     public synchronized boolean isEmpty() {
-        return front == null;
+        return size == 0;
     }
 
     public synchronized int size() {
         return size;
     }
 
+
+    private void ensureCapacity(int minCapacity) {
+        if (minCapacity <= data.length) return;
+
+        int newCap = data.length * 2;
+        Orders[] newData = new Orders[newCap];
+
+
+        for (int i = 0; i < size; i++) {
+            newData[i] = data[(front + i) % data.length];
+        }
+
+        data  = newData;
+        front = 0;
+        rear  = size;
+    }
+
     public synchronized void loadOrders() {
-
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(PATH));
+        try (BufferedReader reader = new BufferedReader(new FileReader(PATH))) {
             String line;
-
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 ArrayList<Product> products = new ArrayList<>();
-                String id = parts[0];
-                String date = parts[1];
+                String id       = parts[0];
+                String date     = parts[1];
                 String username = parts[2];
+
                 String[] remainingItems = Arrays.copyOfRange(parts, 3, parts.length);
-                for(String item : remainingItems) {
+                for (String item : remainingItems) {
                     products.add(Product.getProduct(item));
                 }
-                this.enqueue(new Orders(id,date, username,products));
+                enqueue(new Orders(id, date, username, products));
             }
-            reader.close();
         } catch (IOException e) {
-            System.out.println("An error occurred while reading.");
+            System.out.println("An error occurred while reading queue data: " + e.getMessage());
         }
-
-
     }
 
     public synchronized void deleteFromQueue(Orders orderObject) throws IOException {
+
         ArrayList<Orders> orders = new ArrayList<>();
-
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(PATH));
+        try (BufferedReader reader = new BufferedReader(new FileReader(PATH))) {
             String line;
-
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 ArrayList<Product> products = new ArrayList<>();
-                String id = parts[0];
-                String date = parts[1];
+                String id       = parts[0];
+                String date     = parts[1];
                 String username = parts[2];
                 String[] remainingItems = Arrays.copyOfRange(parts, 3, parts.length);
-                for(String item : remainingItems) {
+                for (String item : remainingItems) {
                     products.add(Product.getProduct(item));
                 }
-                orders.add(new Orders(id,date, username,products));
+                orders.add(new Orders(id, date, username, products));
             }
-            reader.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred while reading.");
         }
-
-        String username=orderObject.getUsername();
 
         orders.removeIf(order -> order.getOrderId().equals(orderObject.getOrderId()));
 
-        StringBuilder oderData;
-        oderData = new StringBuilder();
-        for(Orders order:orders){
+        StringBuilder orderData = new StringBuilder();
+        for (Orders order : orders) {
+            orderData.append(order.getOrderId()).append(',')
+                    .append(order.getDate()).append(',')
+                    .append(order.getUsername());
 
-            oderData.append(order.getOrderId()).append(",");
-            oderData.append(order.getDate()).append(",");
-            oderData.append(order.getUsername());
-
-            for (Product product: order.getProducts()){
-                oderData.append(",");
-                oderData.append(product.getId());
+            for (Product product : order.getProducts()) {
+                orderData.append(',').append(product.getId());
             }
-            oderData.append("\n");
-
+            orderData.append('\n');
         }
-        TextReaderAndWriter textReaderAndWriter;
 
-        textReaderAndWriter=new TextReaderAndWriter(PATH);
-        textReaderAndWriter.writeTextInNew(oderData.toString());
-
-
+        TextReaderAndWriter writer = new TextReaderAndWriter(PATH);
+        writer.writeTextInNew(orderData.toString());
     }
-
 }
